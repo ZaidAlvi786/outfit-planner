@@ -1,10 +1,13 @@
 import os
 import asyncio
+from dotenv import load_dotenv
 from supabase import create_client
 
-# Load configuration (manually for now since this is a script)
-supabase_url = "https://vklmboqczcywqpdkjdgi.supabase.co"
-supabase_key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZrbG1ib3FjemN5d3FwZGtqZGdpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzMDAxNzYsImV4cCI6MjA4OTg3NjE3Nn0.l38WBBg7V1PihGZgGv5JojH06z96PUkFopQzHXk3mOU"
+# Load credentials from .env (never hardcode keys).
+load_dotenv(os.path.join(os.path.dirname(__file__), "..", ".env"))
+
+supabase_url = os.environ["NEXT_PUBLIC_SUPABASE_URL"]
+supabase_key = os.environ["NEXT_PUBLIC_SUPABASE_ANON_KEY"]
 supabase = create_client(supabase_url, supabase_key)
 
 DATA = {
