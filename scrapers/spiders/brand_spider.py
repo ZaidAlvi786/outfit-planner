@@ -1,8 +1,12 @@
 from playwright.async_api import async_playwright
 from supabase import create_client
+from dotenv import load_dotenv
 import asyncio
 import os
 import argparse
+
+# Load Supabase credentials from the repo-root .env (never hardcode keys).
+load_dotenv(os.path.join(os.path.dirname(__file__), "..", "..", ".env"))
 
 class Categorizer:
     def __init__(self, supabase):
@@ -92,9 +96,11 @@ class Categorizer:
 
 class FashionScraper:
     def __init__(self):
-        # Prefer environment variables, fallback to hardcoded but stripped
-        supabase_url = os.environ.get("NEXT_PUBLIC_SUPABASE_URL", "https://vklmboqczcywqpdkjdgi.supabase.co").strip()
-        supabase_key = os.environ.get("NEXT_PUBLIC_SUPABASE_ANON_KEY", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZrbG1ib3FjemN5d3FwZGtqZGdpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzMDAxNzYsImV4cCI6MjA4OTg3NjE3Nn0.l38WBBg7V1PihGZgGv5JojH06z96PUkFopQzHXk3mOU").strip()
+        # Credentials come from .env only.
+        supabase_url = (os.environ.get("NEXT_PUBLIC_SUPABASE_URL") or "").strip()
+        supabase_key = (os.environ.get("NEXT_PUBLIC_SUPABASE_ANON_KEY") or "").strip()
+        if not supabase_url or not supabase_key:
+            raise RuntimeError("Supabase credentials missing — set them in .env")
         self.supabase = create_client(supabase_url, supabase_key)
         self.categorizer = Categorizer(self.supabase)
 
